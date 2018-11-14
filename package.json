@@ -1,0 +1,24 @@
+{
+  "name": "botfacebook",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/4l3x31sV/botfacebook.git"
+  },
+  "author": "Alexeis Carrillo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/4l3x31sV/botfacebook/issues"
+  },
+  "homepage": "https://github.com/4l3x31sV/botfacebook#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "request": "^2.88.0"
+  }
+}
