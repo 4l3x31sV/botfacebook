@@ -23,3 +23,60 @@ app.get('/webhook',function(req, res){
         res.send('Tu no tienes que entrar aqui')
     }
 })
+
+app.post("/webhook",function (req,res) {
+    var data = req.body;
+    console.log(JSON.stringify(data))
+    if(data.object == 'page'){
+        data.entry.forEach(function (pageEntry) {
+            pageEntry.messaging.forEach(function (messagingEvent) {
+                if(messagingEvent.message) {
+                    receiveMessage(messagingEvent)
+                }
+            })
+        })
+    }
+    res.sendStatus(200)
+})
+
+function receiveMessage(event){
+    var senderID = event.sender.id;
+    var messageText = event.message.text;
+    evaluarMensaje(senderID,messageText)
+}
+function evaluarMensaje(senderID, messageText){
+    var mensaje = 'Dijiste ' + messageText;
+    if(isContain(messageText,'hola')){
+        mensaje = 'Hola Bienvenido'
+    }
+    enviarMensajeTexto(senderID, mensaje)
+}
+function enviarMensajeTexto(senderID, mensaje){
+    var messageData = {
+        recipient:{
+            id: senderID
+        },
+        message: {
+            text: mensaje
+        }
+    }
+    callSendAPI(messageData);
+}
+function callSendAPI(messageData){
+    //api de facebook
+    request({
+        uri: 'https://graph.facebook.com/v2.6/me/messages',
+        qs: {access_token: APP_TOKEN},
+        method: 'POST',
+        json: messageData
+    },function(error, response, data){
+        if(error)
+            console.log('No es posible enviar el mensaje')
+        else
+            console.log('Mensaje enviado...')
+    })
+}
+function isContain(texto, word){
+    if(typeof texto=='undefined' || texto.lenght<=0) return false
+    return texto.indexOf(word) > -1
+}
