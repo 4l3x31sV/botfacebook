@@ -2,14 +2,14 @@ var express = require("express");
 var bodyParser = require("body-parser")
 var request = require('request')
 
-const APP_TOKEN = 'EAAZAJeh3ianIBAHFf38mR0cZBFXZC5QweMKgj6Vk5MZBvNuQYBCtOWpZBfEZBymGvBU1X4kerp1I5KxpNsoniSIrHQBI6jV7T5MSu2qza5GiEK4M3FmzZB97nplOhAGZAaF7jqJh8Qt6lFoZAD9GxZCAYf8ZAkVPTwWVPAUDeyGuWjYidE0BOvZCZChBx'
+const APP_TOKEN = 'EAAJcQc9ZChkwBAAI7gLzkn3LxUhG8Ggo2ACl3rgo4vrkrBMp7ZAnSc75iZCJSRuHIEn109ZCbFjK1pNMQZBtKrBazcINCz2AnUk0GFSE8ZAZAHNGUU2g7wuCVYQask38YEM0P6Nz8KIzdGPmN9dl6texkP2SmkfoXMWeqb2Xe6tHK3B2XZA2EbwV'
 
 var app = express();
 
 app.use(bodyParser.json())
 
-app.listen(3000, function () {
-    console.log("Servidor Iniciado puerto 3000")
+app.listen(4000, function () {
+    console.log("Servidor Iniciado puerto 4000")
 })
 
 app.get("/", function (req,res) {
@@ -48,8 +48,68 @@ function evaluarMensaje(senderID, messageText){
     var mensaje = 'Dijiste ' + messageText;
     if(isContain(messageText,'hola')){
         mensaje = 'Hola Bienvenido'
+    }else if(isContain(messageText,'info')){
+        mensaje = 'Hola que tal nuestro numero de telefono es: 68047892\n mi correo es: alexeis.carrillo@gmail.com'
+    }else if(isContain(messageText, 'perro')){
+        enviarMensajeImagen(senderID);
+    }else if(isContain(messageText, 'perfil')){
+        enviarMensajeTemplate(senderID);
+    }else{
+        mensaje= "Aun no puedo respondera tu petición.!!! :("
     }
     enviarMensajeTexto(senderID, mensaje)
+}
+function enviarMensajeTemplate(senderID){
+    var messageData ={
+        recipient:{
+            id: senderID
+        },
+        message:{
+            attachment:{
+                type: "template",
+                payload:{
+                    template_type: 'generic',
+                    elements:[elementTemplate(),elementTemplate()]
+                }
+            }
+        }
+    }
+    callSendAPI(messageData)
+}
+function elementTemplate(){
+    return {
+        title: "Alexeis Vladimir Carrillo Pinaya",
+        subtitle: "Programador Fullstack",
+        item_url: "https://www.facebook.com/Yvaganet-1917045965184522/?modal=admin_todo_tour",
+        image_url: "https://s-media-cache-ak0.pinimg.com/564x/ef/e8/ee/efe8ee7e20537c7af84eaaf88ccc7302.jpg",
+        buttons: [
+            buttonTemplate('Contactame','https://www.facebook.com/Yvaganet-1917045965184522/?modal=admin_todo_tour'),
+            buttonTemplate('Portafolio','https://www.facebook.com/Yvaganet-1917045965184522/?modal=admin_todo_tour/')
+        ]
+    }
+}
+function buttonTemplate(title, url){
+    return {
+        type: 'web_url',
+        url:url,
+        title: title
+    }
+}
+function enviarMensajeImagen(senderID){
+    var messageData = {
+        recipient: {
+            id: senderID
+        },
+        message:{
+            attachment:{
+                type: "image",
+                payload:{
+                    url: "https://s-media-cache-ak0.pinimg.com/564x/ef/e8/ee/efe8ee7e20537c7af84eaaf88ccc7302.jpg"
+                }
+            }
+        }
+    }
+    callSendAPI(messageData)
 }
 function enviarMensajeTexto(senderID, mensaje){
     var messageData = {
